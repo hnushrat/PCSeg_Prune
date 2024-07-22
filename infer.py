@@ -163,10 +163,11 @@ class Trainer:
             num_class = 23
         
         # set model
-        model = build_network(
-            model_cfgs=cfgs.MODEL,
-            num_class=num_class,
-        )
+        # model = build_network(
+        #     model_cfgs=cfgs.MODEL,
+        #     num_class=num_class,
+        # )
+        model = torch.load('/mnt/e/PCSeg/PRUNED_MODELS/UNSTRUCTURED/NEW_PRUNED_MODEL_60_percent.pth')
         if args.sync_bn:
             model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
         model.cuda()
@@ -203,7 +204,9 @@ class Trainer:
         if args.ckp is not None:
             self.resume(args.ckp)
         else:
-            ckp_list = glob.glob(str(ckp_dir / '*checkpoint_epoch_*.pth'))
+            print(f'*************{ckp_dir}********')
+            ckp_list = glob.glob(str(ckp_dir / '*checkpoint_epoch_*.pth')) # DEFAULT
+            # ckp_list = glob.glob(str(ckp_dir / 'NEW_*.pth'))
             if cfgs.LOCAL_RANK == 0:
                 print('found checkpoint list:', ckp_list)
             if len(ckp_list) > 0:
@@ -309,8 +312,10 @@ class Trainer:
         self.start_epoch = checkpoint['epoch']
         if cfgs.LOCAL_RANK == 0:
             print('checkpoint["epoch"]:', checkpoint['epoch'])
+
         self.it = checkpoint['it']
         self.model.load_params(checkpoint['model_state'], strict=True)
+        self.model.load_state_dict(checkpoint, strict=True)
         self.optimizer.load_state_dict(checkpoint['optimizer_state'])
         try:
             self.scaler.load_state_dict(checkpoint['scaler_state'])
@@ -432,7 +437,9 @@ class Trainer:
             
             point_predict = ret_dict['point_predict']
             point_labels = ret_dict['point_labels']
-            
+            # print(ret_dict)
+            # print(point_predict.size(), point_labels.size())
+
             save_name = (10-len(str(i))) * '0' + str(i)
             save_path = save_dir + save_name + '.npy'
             np.save(save_path, ret_dict['point_predict'][0])

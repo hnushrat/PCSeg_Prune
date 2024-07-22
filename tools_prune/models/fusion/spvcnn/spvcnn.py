@@ -15,11 +15,12 @@ from pcseg.model.segmentor.base_segmentors import BaseSegmentor
 from torchsparse import SparseTensor
 from torchsparse.nn.utils import fapply
 from .utils import initial_voxelize, point_to_voxel, voxel_to_point
-from pcseg.loss import Losses
+from .loss import Losses
 
 
 __all__ = ['SPVCNN']
 
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 class SyncBatchNorm(nn.SyncBatchNorm):
     def forward(self, input: SparseTensor) -> SparseTensor:
@@ -397,7 +398,7 @@ class SPVCNN(BaseSegmentor):
                 nn.init.constant_(m.bias, 0)
 
     def forward(self, batch_dict, return_logit=False, return_tta=False): 
-        x = batch_dict['lidar'].to('cuda')
+        x = batch_dict['lidar'].to(DEVICE)
         x.F = x.F[:, :self.in_feature_dim]
         # x: SparseTensor z: PointTensor
         z = PointTensor(x.F, x.C.float())

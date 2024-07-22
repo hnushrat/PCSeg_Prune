@@ -1,29 +1,29 @@
-MODALITY: 'voxel'
+MODALITY: 'fusion'
 
 DATA:
     DATASET: 'semantickitti'     # choices: ['nuscenes', 'semantickitti', 'scribblekitti']
     PETRELOSS_CONFIG: None
-    DATA_PATH: '/mnt/e/PCSeg/dataset/sequences/' # 'data_root/SemanticKITTI/sequences/'
+    DATA_PATH: '/mnt/e/PCSeg/dataset/sequences/'
     VOXEL_SIZE: 0.05
     AUGMENT: 'GlobalAugment_LP'  # choices: ['GlobalAugment', 'GlobalAugment_LP']
     NUM_POINTS: 1000000
     TRAINVAL: False              # train set: train + val
-    TTA: True # False #(True -> Test Set Prediction ; False -> Val set Pred)
-    OUTPUT_DIR: '/mnt/e/PCSeg/output_test/'
+    TTA: False # (True -> Test Set Prediction ; False -> Val set Pred)
+    OUTPUT_DIR: '/mnt/e/PCSeg/pruned_fusion/'
 MODEL:
-    NAME: MinkUNet
+    NAME: SPVCNN
     IGNORE_LABEL: 0
-    IN_FEATURE_DIM: 4
+    IN_FEATURE_DIM: 4   # 5 fo waymo
     BLOCK: ResBlock
-    NUM_LAYER: [2, 3, 4, 6, 2, 2, 2, 2]
+    NUM_LAYER: [2, 2, 2, 2, 2, 2, 2, 2]
     PLANES: [32, 32, 64, 128, 256, 256, 128, 96, 96]
     cr: 1.0
     DROPOUT_P: 0.0
     LABEL_SMOOTHING: 0.1
-    IF_DIST: True                # True: multi-gpus, False: single gpu
+    IF_DIST: False  # True: multi-gpus, False: single gpu
 
 OPTIM:
-    BATCH_SIZE_PER_GPU: 4 # 12 # (4 for inference, 8 for Training on 24GB GPU )
+    BATCH_SIZE_PER_GPU: 1 # 16
     NUM_EPOCHS: 36
     OPTIMIZER: sgd
     LR_PER_SAMPLE: 0.02

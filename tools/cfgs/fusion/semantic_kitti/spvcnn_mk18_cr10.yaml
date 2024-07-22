@@ -3,13 +3,13 @@ MODALITY: 'fusion'
 DATA:
     DATASET: 'semantickitti'     # choices: ['nuscenes', 'semantickitti', 'scribblekitti']
     PETRELOSS_CONFIG: None
-    DATA_PATH: 'data_root/SemanticKITTI/sequences/'
+    DATA_PATH: '/mnt/e/PCSeg/dataset/sequences/'
     VOXEL_SIZE: 0.05
     AUGMENT: 'GlobalAugment_LP'  # choices: ['GlobalAugment', 'GlobalAugment_LP']
     NUM_POINTS: 1000000
     TRAINVAL: False              # train set: train + val
-    TTA: False
-
+    TTA: False # (True -> Test Set Prediction ; False -> Val set Pred)
+    OUTPUT_DIR: '/mnt/e/PCSeg/PRUNED_MODELS/UNSTRUCTURED/Val_results/'
 MODEL:
     NAME: SPVCNN
     IGNORE_LABEL: 0
@@ -20,10 +20,10 @@ MODEL:
     cr: 1.0
     DROPOUT_P: 0.0
     LABEL_SMOOTHING: 0.1
-    IF_DIST: True  # True: multi-gpus, False: single gpu
+    IF_DIST: False  # True: multi-gpus, False: single gpu
 
 OPTIM:
-    BATCH_SIZE_PER_GPU: 16
+    BATCH_SIZE_PER_GPU: 4 # 16
     NUM_EPOCHS: 36
     OPTIMIZER: sgd
     LR_PER_SAMPLE: 0.02

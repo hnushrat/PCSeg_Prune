@@ -181,10 +181,17 @@ class Visualizer(object):
         self.o3d_visualizer.destroy_window()
         return
 
-def show_rawdata(class_id, pc_path):
+def show_rawdata(pc_path, pred_path, is_val = None):
     # raw_data = np.load(path)
     raw_data = np.fromfile(pc_path, dtype=np.float32).reshape((-1, 4))
-    raw_label = np.fromfile(pc_path.replace('velodyne', 'labels')[:-3] + 'label', dtype=np.uint32).reshape((-1, 1))
+
+    if is_val:
+        raw_label = np.load(pred_path).reshape((-1, 1))
+    else:
+        raw_label = np.fromfile(pc_path.replace('velodyne', 'labels')[:-3] + 'label', dtype=np.uint32).reshape((-1, 1))
+    
+    print(raw_data.shape, raw_label.shape)
+
     with open('./semantic-kitti.yaml', 'r') as stream:
         CFG = yaml.safe_load(stream)
     learning_map = CFG['learning_map']
@@ -202,6 +209,12 @@ def show_rawdata(class_id, pc_path):
     color_dict_mapped[19] = [218, 165, 32]  # traffic-sign
 
     raw_label = raw_label & 0xFFFF  # delete high 16 digits binary
+    print(np.unique(raw_label))
+
+    #### CHANGE 
+    if is_val:
+        raw_label = np.vectorize(learning_map_inv.__getitem__)(raw_label)
+    #####
     raw_label = np.vectorize(learning_map.__getitem__)(raw_label).reshape((-1,1))
 
     colors = []
@@ -213,13 +226,22 @@ def show_rawdata(class_id, pc_path):
         points = raw_data[:, 0:3]
     else:
         points = raw_data[:, 3:6]
+    
+    
     color_points = np.concatenate((points, colors), axis=1)
+    
     vis_er = Visualizer(color_points)
     vis_er.show(save_path="pic.ply")
 
 
 if __name__ == "__main__":
-    pc_path = '/home/PJLAB/liuyouquan/Downloads/semantic-kitti/dataset/sequences/08/velodyne/002564.bin'
-    label_path = '/home/PJLAB/liuyouquan/Downloads/semantic-kitti/dataset/sequences/08/velodyne/002564.label'
-    show_rawdata(class_id, pc_path)
+
+    pc_index = 56
+    pc_path = f'/mnt/e/PCSeg/dataset/sequences/08/velodyne/0000{pc_index}.bin'
+    label_path = f'/mnt/e/PCSeg/dataset/sequences/08/labels/0000{pc_index}.label'
+    show_rawdata(pc_path, label_path, is_val = False)
+
+    # pred_path = f'/mnt/e/PCSeg/PRUNED_MODELS/UNSTRUCTURED/Val_results/0000000{pc_index}.npy'
+    # show_rawdata(pc_path, pred_path, is_val = True)
+    
 

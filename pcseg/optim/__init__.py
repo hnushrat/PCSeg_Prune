@@ -15,7 +15,7 @@ def build_optimizer(model, optim_cfg):
     if optim_cfg.OPTIMIZER == 'sgd':
         optimizer = optim.SGD(
             model.parameters(),
-            lr=optim_cfg.LR,
+            lr=optim_cfg.LR_PER_SAMPLE,
             weight_decay=optim_cfg.WEIGHT_DECAY,
             momentum=optim_cfg.MOMENTUM,
         )

@@ -124,9 +124,14 @@ class EQLv2(nn.Module):
             pos_w = cls_score.new_ones((self.n_i, self.n_c))
         else:
             # the negative weight for objectiveness is always 1
-            #neg_w = self.map_func(self.pos_neg) # 
+            #neg_w = self.map_func(self.pos_neg) #
+            # 
+            #  
+            
             # neg_w = torch.cat([cls_score.new_ones(1), self.map_func(self.pos_neg)]) # undefined set 1
+            
             neg_w = torch.cat([cls_score.new_ones(1), 1 / (1 + torch.exp(-self.gamma * (self.pos_neg - self.mu)))]) # undefined set 1
+
             pos_w = 1 + self.alpha * (1 - neg_w)
             neg_w = neg_w.view(1, -1).expand(self.n_i, self.n_c)
             pos_w = pos_w.view(1, -1).expand(self.n_i, self.n_c)

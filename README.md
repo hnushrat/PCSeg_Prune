@@ -1,4 +1,4 @@
-<img src="docs/figs/pcseg_logo.png" align="right" width="30%">
+<img src="docs/figs/pcseg_logo.jpg" align="right" width="30%">
 
 # OpenPCSeg: An Open Source Point Cloud Segmentation Codebase
 [![License](https://img.shields.io/static/v1?label=License&message=Apache-2.0&color=yellow)]()
@@ -80,30 +80,6 @@
 
 
 ## Model Zoo
-
-### SemanticKITTI Dataset Representative Models
-Selected supported methods are shown in the below table. The results are mean IoU performance of moderate difficulty on the *val* set of SemanticKITTI dataset.
-* All LiDAR-based models are trained with 2 A100 GPUs and are available for download.
-* The training and validation are executed with CUDA 11.3 and PyTorch 1.10.
-* All models are trained with *merely train split* of SemanticKITTI Dataset.
-* Prediction from our models are directly used for evaluation, without employing any Test Time Augmentation or ensembling.
-
-|                                             | training time |   mIoU   |  download  | 
-|---------------------------------------------|--------------:|:--------:|:----------:|
-| [MinkowskiNet](tools/cfgs/voxel/semantic_kitti/minkunet_mk34_cr10.yaml) | ~12.0 hours | 70.04 | [model-737M](https://www.dropbox.com/s/a9gjxeziy6rbiui/semkitti_minkunet_mk34_cr16_checkpoint_epoch_36.pth?dl=0) | 
-| [Cylinder3D](tools/cfgs/voxel/semantic_kitti/cylinder_cy480_cr10.yaml)  |  ~8.7 hours | 66.07 | [model-56M](https://www.dropbox.com/s/imtcmn9z4qldc2h/semkitti_cylinder_cy480_cr10_checkpoint_epoch_35.pth?dl=0) |
-| [SPVCNN](tools/cfgs/fusion/semantic_kitti/spvcnn_mk18_cr10.yaml)        | ~13.1 hours | 68.58 | [model-166M](https://www.dropbox.com/s/94j8rxkxlo2j924/semkitti_spvcnn_mk18_cr10_checkpoint_epoch_36.pth?dl=0) |
-| [RPVNet](tools/cfgs/fusion/semantic_kitti/rpvnet_mk34_cr17_5.yaml)      | ~14.5 hours | 68.86 | [model-980M](https://www.dropbox.com/s/sf71far59ij8i3c/semkitti_rpvnet_mk34_cr175_checkpoint_epoch_36.pth?dl=0) |
-
-
-### Waymo Open Dataset Representative Models
-We are not supposed to provide pre-trained weights due to [Waymo Dataset License Agreement](https://waymo.com/open/terms/), but you can easily achieve similar performance by training according to the default configs.
-
-|                                             | training time |   mIoU   |
-|---------------------------------------------|--------------:|:--------:|
-| [MinkowskiNet](tools/cfgs/voxel/waymo/minkunet_mk34_cr16.yaml) | ~25.0 hours | 69.20 |
-| [Cylinder3D](tools/cfgs/voxel/waymo/cylinder_cy480_cr10.yaml)  | ~19.2 hours | 66.42 |
-| [SPVCNN](tools/cfgs/fusion/waymo/spvcnn_mk34_cr16.yaml)        | ~28.0 hours | 69.37 |
 
 
 ## Installation

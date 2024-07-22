@@ -170,9 +170,9 @@ class Trainer:
             )
         else:
             print("\n\n******LOADING PRUNED MODEL******\n\n")
-            model = torch.load("/mnt/e/PCSeg/PRUNED_MODEL_20_percent.pth")
+            model = torch.load("/home/ujjwal/PCSeg/PRUNED_MODEL_50_percent.pth")
             
-            # print(summary(model))
+            print(summary(model))
         
         if args.sync_bn:
             model = nn.SyncBatchNorm.convert_sync_batchnorm(model)
@@ -368,10 +368,10 @@ class Trainer:
             load_data_to_gpu(batch)
             # print(f"********{self.if_amp}*********")
             # print(self.model(batch))
-            # with amp.autocast(enabled=self.if_amp):
-            
-            ret_dict, tb_dict, disp_dict = self.model(batch)
-            loss = ret_dict['loss'].mean()
+            with amp.autocast(enabled=self.if_amp):
+            # with amp.autocast():
+                ret_dict, tb_dict, disp_dict = self.model(batch)
+                loss = ret_dict['loss'].mean()
             
             forward_timer = time.time()
             cur_forward_time = forward_timer - data_timer

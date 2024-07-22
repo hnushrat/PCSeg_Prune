@@ -192,7 +192,6 @@ class SemkittiFusionDataset(data.Dataset):
             'range_image' : range_image,
             'range_pxpy' : range_pxpy,
         }
-
         return ret
 
     @staticmethod
